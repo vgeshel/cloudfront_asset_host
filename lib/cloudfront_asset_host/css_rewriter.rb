@@ -9,7 +9,7 @@ module CloudfrontAssetHost
 
     class << self
       # matches optional quoted url(<path>)
-      ReplaceRexeg = /url\(["']?([^\)\?"']+)(\?[^"']*)?["']?\)/i
+      ReplaceRexeg = /url\(["']?([^\)\?\#"']+)(\#[^"']*)?(\?[^"']*)?["']?\)/i
 
       # Returns the path to the temporary file that contains the
       # rewritten stylesheet
@@ -28,12 +28,16 @@ module CloudfrontAssetHost
     private
 
       def rewrite_asset_link(asset_link, stylesheet_path)
-        url = asset_link.match(ReplaceRexeg)[1]
+        match = asset_link.match(ReplaceRexeg)[1]
+        url = match[1]
+        hash = match[2] || ''
+        query = match[3] || ''
+
         if url
           path = path_for_url(url, stylesheet_path)
 
           if path.present? && File.exists?(path)
-            key = CloudfrontAssetHost.key_for_path(path) + path.gsub(Rails.public_path, '')
+            key = CloudfrontAssetHost.key_for_path(path) + path.gsub(Rails.public_path, '') + hash + query
             "url(#{CloudfrontAssetHost.asset_host(url)}/#{key})"
           else
             puts "Could not extract path: #{path}"
