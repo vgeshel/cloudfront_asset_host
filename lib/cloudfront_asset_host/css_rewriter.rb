@@ -50,7 +50,7 @@ module CloudfrontAssetHost
       end
 
       def path_for_url(url, stylesheet_path)
-        if url.starts_with?('/')
+        if url.start_with?('/')
           # absolute to public path
           File.expand_path(File.join(Rails.public_path, url))
         else
