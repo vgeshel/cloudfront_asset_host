@@ -28,7 +28,7 @@ module CloudfrontAssetHost
     private
 
       def rewrite_asset_link(asset_link, stylesheet_path)
-        match = asset_link.match(ReplaceRexeg)[1]
+        match = asset_link.match(ReplaceRexeg)
         url = match[1]
         hash = match[2] || ''
         query = match[3] || ''
