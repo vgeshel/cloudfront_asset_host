@@ -32,7 +32,7 @@ module CloudfrontAssetHost
             path = rewritten_css_path(path)
 
             data_path = gzip ? gzipped_path(path) : path
-            bucket.put(key, File.read(data_path), {}, 'public-read', headers_for_path(extension, gzip)) unless dryrun
+            bucket.put(key, File.open(data_path), {}, 'public-read', headers_for_path(extension, gzip)) unless dryrun
 
             File.unlink(data_path) if gzip && File.exists?(data_path)
           else

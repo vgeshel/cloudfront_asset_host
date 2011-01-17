@@ -46,6 +46,9 @@ module CloudfrontAssetHost
   # Key Regular Expression to filter out/exclude content
   mattr_accessor :exclude_pattern
 
+  # Use hash prefix in paths
+  mattr_accessor :use_hash_prefix
+  
   class << self
 
     def configure
@@ -67,6 +70,8 @@ module CloudfrontAssetHost
       self.plain_prefix = ""
 
       self.image_extensions = %w(jpg jpeg gif png)
+
+      self.use_hash_prefix = true
 
       yield(self)
 
@@ -121,7 +126,7 @@ module CloudfrontAssetHost
     end
 
     def key_for_path(path)
-      key_prefix + md5sum(path)[0..8]
+      key_prefix + (use_hash_prefix ? md5sum(path)[0..8] : '')
     end
 
     def gzip_allowed_for_source?(source)
