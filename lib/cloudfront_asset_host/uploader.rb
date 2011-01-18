@@ -32,7 +32,9 @@ module CloudfrontAssetHost
             path = rewritten_css_path(path)
 
             data_path = gzip ? gzipped_path(path) : path
-            bucket.put(key, File.open(data_path), {}, 'public-read', headers_for_path(extension, gzip)) unless dryrun
+            headers = headers_for_path(extension, gzip)
+            puts "++ #{key}: #{headers}"
+            bucket.put(key, File.open(data_path), {}, 'public-read', headers) unless dryrun
 
             File.unlink(data_path) if gzip && File.exists?(data_path)
           else
@@ -108,11 +110,11 @@ module CloudfrontAssetHost
       def headers_for_path(extension, gzip = false)
         mime = ext_to_mime[extension] || 'application/octet-stream'
         headers = {
-          'Content-Type' => mime,
-          'Cache-Control' => "max-age=#{10.years.to_i}",
-          'Expires' => 1.year.from_now.utc.to_s
+          'content-type' => mime,
+          'cache-control' => "max-age=#{10.years.to_i}",
+          'expires' => 1.year.from_now.utc.to_s
         }
-        headers['Content-Encoding'] = 'gzip' if gzip
+        headers['content-encoding'] = 'gzip' if gzip
 
         headers
       end
