@@ -33,7 +33,6 @@ module CloudfrontAssetHost
 
             data_path = gzip ? gzipped_path(path) : path
             headers = headers_for_path(extension, gzip)
-            puts "++ #{key}: #{headers}"
             bucket.put(key, File.open(data_path), {}, 'public-read', headers) unless dryrun
 
             File.unlink(data_path) if gzip && File.exists?(data_path)
