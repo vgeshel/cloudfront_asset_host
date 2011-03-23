@@ -34,9 +34,11 @@ module CloudfrontAssetHost
         query = match[3] || ''
 
         if url
-          path = path_for_url(url, stylesheet_path)
+          path_and_flag = path_for_url(url, stylesheet_path)
+          path = path_and_flag[0]
+          relative = path_and_flag[1]
 
-          if path.present? && File.exists?(path)
+          if relative && path.present? && File.exists?(path)
             key = CloudfrontAssetHost.key_for_path(path) + path.gsub(Rails.public_path, '') + hash + query
             "url(#{CloudfrontAssetHost.asset_host(url)}/#{key})"
           else
@@ -52,10 +54,10 @@ module CloudfrontAssetHost
       def path_for_url(url, stylesheet_path)
         if url.start_with?('/')
           # absolute to public path
-          File.expand_path(File.join(Rails.public_path, url))
+          [File.expand_path(File.join(Rails.public_path, url)), false]
         else
           # relative to stylesheet_path
-          File.expand_path(File.join(File.dirname(stylesheet_path), url))
+          [File.expand_path(File.join(File.dirname(stylesheet_path), url)), true]
         end
       end
 
