@@ -33,6 +33,5 @@ DEPENDENCIES
   cloudfront_asset_host!
   mocha
   redgreen
-  right_aws
   shoulda
   turn
