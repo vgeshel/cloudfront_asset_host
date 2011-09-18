@@ -110,6 +110,12 @@ module CloudfrontAssetHost
         host << "/#{CloudfrontAssetHost.plain_prefix}" if CloudfrontAssetHost.plain_prefix.present?
       end
 
+      if source && request && CloudfrontAssetHost.key_prefix
+        host << "/#{CloudfrontAssetHost.key_prefix}"
+
+        host << "/" unless source[0] == ?/
+      end
+
       host
     end
 
@@ -126,7 +132,7 @@ module CloudfrontAssetHost
     end
 
     def key_for_path(path)
-      key_prefix + (use_hash_prefix ? md5sum(path)[0..8] : '')
+      (use_hash_prefix ? md5sum(path)[0..8] : '')
     end
 
     def gzip_allowed_for_source?(source)

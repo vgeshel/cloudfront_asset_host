@@ -23,6 +23,7 @@ module ActionView
 
         # Override asset_path so it prepends the asset_id
         def rewrite_asset_path_with_cloudfront(source, path=nil)
+          source = "#{path}/#{source}" unless source[0] == ?/ || ! path || path.blank?
           asset_id = rails_asset_id(source)
           if asset_id.blank?
             source

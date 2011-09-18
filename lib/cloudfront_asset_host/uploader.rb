@@ -67,6 +67,11 @@ module CloudfrontAssetHost
       def keys_with_paths
         current_paths.inject({}) do |result, path|
           key = CloudfrontAssetHost.plain_prefix.present? ? "#{CloudfrontAssetHost.plain_prefix}/" : ""
+
+          if CloudfrontAssetHost.key_prefix
+            key << "#{CloudfrontAssetHost.key_prefix}"
+          end
+          
           key << CloudfrontAssetHost.key_for_path(path) + path.gsub(Rails.public_path, '')
 
           result[key] = path
@@ -79,7 +84,13 @@ module CloudfrontAssetHost
           source = path.gsub(Rails.public_path, '')
 
           if CloudfrontAssetHost.gzip_allowed_for_source?(source)
-            key = "#{CloudfrontAssetHost.gzip_prefix}/" << CloudfrontAssetHost.key_for_path(path) << source
+            key = "#{CloudfrontAssetHost.gzip_prefix}/"
+            
+            if CloudfrontAssetHost.key_prefix
+              key << "#{CloudfrontAssetHost.key_prefix}"
+            end
+            
+            key << CloudfrontAssetHost.key_for_path(path) << source
             result[key] = path
           end
 
