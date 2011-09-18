@@ -1,7 +1,7 @@
 module ActionView
   module Helpers
     module AssetTagHelper
-      module AssetPaths
+      class AssetPaths
         private
 
         # Override asset_id so it calculates the key by md5 instead of modified-time
