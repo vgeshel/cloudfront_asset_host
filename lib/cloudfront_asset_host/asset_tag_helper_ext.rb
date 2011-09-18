@@ -6,17 +6,15 @@ module ActionView
 
         # Override asset_id so it calculates the key by md5 instead of modified-time
         def rails_asset_id_with_cloudfront(source)
-          if @@cache_asset_timestamps && (asset_id = @@asset_timestamps_cache[source])
+          if self.cache_asset_ids && (asset_id = self.asset_ids_cache[source])
             asset_id
           else
             path = File.join(config.assets_dir, source)
             rewrite_path = File.exist?(path) && !CloudfrontAssetHost.disable_cdn_for_source?(source)
             asset_id = rewrite_path ? CloudfrontAssetHost.key_for_path(path) : ''
 
-            if @@cache_asset_timestamps
-              @@asset_timestamps_cache_guard.synchronize do
-                @@asset_timestamps_cache[source] = asset_id
-              end
+            if self.cache_asset_ids
+              add_to_asset_ids_cache(source, asset_id)
             end
 
             asset_id
