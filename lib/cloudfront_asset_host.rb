@@ -120,8 +120,8 @@ module CloudfrontAssetHost
     def enable!
       if enabled
         ActionController::Base.asset_host = Proc.new { |source, request| CloudfrontAssetHost.asset_host(source, request) }
-        ActionView::Helpers::AssetTagHelper.send(:alias_method_chain, :rewrite_asset_path, :cloudfront)
-        ActionView::Helpers::AssetTagHelper.send(:alias_method_chain, :rails_asset_id, :cloudfront)
+        ActionView::Helpers::AssetTagHelper::AssetPaths.send(:alias_method_chain, :rewrite_asset_path, :cloudfront)
+        ActionView::Helpers::AssetTagHelper::AssetPaths.send(:alias_method_chain, :rails_asset_id, :cloudfront)
       end
     end
 
