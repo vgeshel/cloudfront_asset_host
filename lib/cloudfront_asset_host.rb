@@ -86,10 +86,10 @@ module CloudfrontAssetHost
           host = cname.call(source, request)
         else
           host = (cname =~ /%d/) ? cname % (source.hash % 4) : cname.to_s
-          host = "http://#{host}"
+          host = "//#{host}"
         end
       else
-        host = "http://#{self.bucket_host}"
+        host = "//#{self.bucket_host}"
       end
 
       if source && request && CloudfrontAssetHost.gzip
